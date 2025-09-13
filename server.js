@@ -58,6 +58,33 @@ function duDoanTheoXiNgau(dice) {
   ).pop();
 }
 
+// === HÀM DỰ ĐOÁN VỊ (3 số cùng bên) ===
+function getDuDoanVi(tong, duDoan) {
+  let candidates = [];
+
+  if (duDoan === "Xỉu") {
+    // chỉ trong khoảng 4 - 10
+    for (let i = tong - 1; i <= tong + 1; i++) {
+      if (i >= 4 && i <= 10) candidates.push(i);
+    }
+    while (candidates.length < 3) {
+      let r = Math.floor(Math.random() * 7) + 4; // random 4-10
+      if (!candidates.includes(r)) candidates.push(r);
+    }
+  } else {
+    // chỉ trong khoảng 11 - 17
+    for (let i = tong - 1; i <= tong + 1; i++) {
+      if (i >= 11 && i <= 17) candidates.push(i);
+    }
+    while (candidates.length < 3) {
+      let r = Math.floor(Math.random() * 7) + 11; // random 11-17
+      if (!candidates.includes(r)) candidates.push(r);
+    }
+  }
+
+  return candidates.slice(0, 3);
+}
+
 // === API CHÍNH ===
 app.get('/api/sicbo/vip', async (req, res, next) => {
   try {
@@ -76,14 +103,8 @@ app.get('/api/sicbo/vip', async (req, res, next) => {
     // random độ tin cậy
     const doTinCay = getStableConfidence(latest.Phien);
 
-    // ví dụ dự đoán vị xoay quanh tổng
-    const duDoanVi = [
-      latest.Tong,
-      latest.Tong + 1,
-      latest.Tong - 1,
-      latest.Tong + 2,
-      latest.Tong - 2
-    ];
+    // dự đoán vị (3 số cùng bên Tài/Xỉu)
+    const duDoanVi = getDuDoanVi(latest.Tong, prediction);
 
     // chỉ 1 form JSON duy nhất
     const result = {
@@ -96,7 +117,7 @@ app.get('/api/sicbo/vip', async (req, res, next) => {
       du_doan: prediction,
       do_tin_cay: doTinCay,
       du_doan_vi: duDoanVi,
-      giai_thich: "địt bố mày"
+      giai_thich: "địt mẹ tuấn kiệt"
     };
 
     res.json(result);
