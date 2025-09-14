@@ -88,7 +88,7 @@ function getDuDoanVi(tong, duDoan) {
 // === API CHÍNH ===
 app.get('/api/sicbo/vip', async (req, res, next) => {
   try {
-    const response = await axiosInstance.get('https://xksoa.onrender.com/api/lxk');
+    const response = await axiosInstance.get('https://sicbosun-production.up.railway.app/api/lxk');
     const latest = response.data;
 
     if (!latest || !latest.Phien) {
@@ -135,4 +135,5 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`✅ API Sicbo VIP chạy tại http://localhost:${PORT}`);
 });
+
 
